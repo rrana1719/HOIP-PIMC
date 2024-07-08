@@ -8,4 +8,4 @@ We looked into two geometries.
    
 2) The folder titled "Thin Film Geometry" has everything incorporated into the Python script. The Hankel Transform library is used to get the electron-hole potential for an exciton in a thin inorganic film surrounded by semi-infinite organic layers. Like the crystal geometry, the python script uses path integral Monte Carlo (PIMC) with a Fröhlich-like model Hamiltonian to get the renormalized exciton binding energy and corresponding P(r) at a certain temperature. We note that this code can also get the exciton binding energy in the absence of phonon interactions if needed.
    
-3) The folder titled "Figures" contains a Python script and Adobe Illustrator script along with the P(r)'s that generated the figures for the work.
+
