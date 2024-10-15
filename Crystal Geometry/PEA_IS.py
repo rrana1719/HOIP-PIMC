@@ -103,9 +103,9 @@ def polPot_cross(r):
     
 #Helper function to construct the Virial estimator for the self-attractice piece    
 @numba.jit(nopython=True)
-def Vir_self(rm,rd):
+def Vir_self(rm):
     rnorm = rm
-    rnast = rd
+    rnast = rm
     V = (2*ep_o/ref)*(rnast/rnorm)
     arg = (ep_o/ref)*rnorm
     if (arg < 3):
@@ -166,8 +166,7 @@ def Est_self(x):
                 jy = x[j,1] - Ly*np.round(x[j,1] /Ly)
             
                 rmag = np.sqrt( (ix-jx)**2 + (iy-jy)**2  )
-                rdot = (ix**2)+(iy**2) - ((ix*jx) +(iy*jy) )
-                energ = energ + np.exp(-wlo*abs(i-j)/T/N)*(Vir_self(rmag,rdot) - (wlo/T/N)*abs(i-j)*polPot_self(rmag) )
+                energ = energ + np.exp(-wlo*abs(i-j)/T/N)*(Vir_self(rmag) - (wlo/T/N)*abs(i-j)*polPot_self(rmag) )
     
     
     return ( (garb/T/N/N)*energ )
@@ -190,7 +189,7 @@ def Est_cross(x,h):
     
     return ( (garb/T/N/N)*energ )
         
-
+#Terms of 3/2*kBT cancel out from the total estimator
     
   
 #Monte Carlo Sweep
