@@ -140,7 +140,7 @@ def polPot_cross(r):
 @numba.jit(nopython=True)
 def Vir_self(rm):
     rnorm = rm
-    rnast = rm
+    rnast = rm**2
     V = (2*ep_o/ref)*(rnast/rnorm)
     arg = (ep_o/ref)*rnorm
     if (arg < 3):
