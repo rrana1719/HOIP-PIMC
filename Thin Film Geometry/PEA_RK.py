@@ -213,14 +213,14 @@ def Est_cross(x,h):
     energ = 0.
     for i in range(N):
         for j in range(N):
-            if(i != j):
+            if(i > -1):
                 ix = x[i,0] 
                 iy = x[i,1] 
                 jx = h[j,0] 
                 jy = h[j,1] 
 
                 rmag = np.sqrt( (ix-jx - Lx*np.round((ix-jx)/Lx))**2 + (iy-jy - Ly*np.round((iy-jy)/Ly))**2  )
-                energ = energ + np.exp(-wlo*abs(i-j)/T/N)*(Vir_cross(rmag) - 2*(wlo/T/N)*abs(i-j)*polPot_cross(rmag) )
+                energ = energ + np.exp(-wlo*abs(i-j)/T/N)*(0.5*Vir_cross(rmag) - (wlo/T/N)*abs(i-j)*polPot_cross(rmag) )
     
     
     return ( (garb/T/N/N)*energ )
@@ -354,16 +354,18 @@ def MetropolisB(x,xn0,xn1,yn0, yn1, n,N,T,mass,h):
     PEi_self = 0.
     PEi_cross = 0.
     for j in range(N):
+        # Cross term: include ALL j (including j == n)
+        jx = h[j,0]  
+        jy = h[j,1] 
+        rtot = np.sqrt( (jx-nx - Lx*np.round((jx-nx)/Lx))**2 + (jy-ny - Ly*np.round((jy-ny)/Ly))**2   )
+        PEi_cross = PEi_cross + np.exp(-wlo*abs(n-j)/T/N)*polPot_cross(rtot)
+        
+        
         if (j != n%N):
             ix = x[j,0]  
             iy = x[j,1] 
             rtot = np.sqrt( (ix-nx - Lx*np.round((ix-nx)/Lx))**2 + (iy-ny - Ly*np.round((iy-ny)/Ly))**2   )
             PEi_self = PEi_self + np.exp(-wlo*abs(n-j)/T/N)*polPot_self(rtot)
-            
-            jx = h[j,0]  
-            jy = h[j,1] 
-            rtot = np.sqrt( (jx-nx - Lx*np.round((jx-nx)/Lx))**2 + (jy-ny - Ly*np.round((jy-ny)/Ly))**2   )
-            PEi_cross = PEi_cross + np.exp(-wlo*abs(n-j)/T/N)*polPot_cross(rtot)
 
    
     xr = (x[(n+1)%N,0]-xn1) - Lx*np.round((x[(n+1)%N,0]-xn1)/Lx)
@@ -387,20 +389,20 @@ def MetropolisB(x,xn0,xn1,yn0, yn1, n,N,T,mass,h):
     PEf_self = 0.
     PEf_cross = 0.
     for j in range(N):
+        # Cross term: include ALL j (including j == n)
+        jx = h[j,0]  
+        jy = h[j,1] 
+        rtot = np.sqrt( (jx-nx - Lx*np.round((jx-nx)/Lx))**2 + (jy-ny - Ly*np.round((jy-ny)/Ly))**2   )
+        PEf_cross = PEf_cross + np.exp(-wlo*abs(n-j)/T/N)*polPot_cross(rtot)
+        
         if (j != n%N):
             ix = x[j,0]  
             iy = x[j,1] 
             rtot = np.sqrt( (ix-nx - Lx*np.round((ix-nx)/Lx))**2 + (iy-ny - Ly*np.round((iy-ny)/Ly))**2   )
             PEf_self = PEf_self + np.exp(-wlo*abs(n-j)/T/N)*polPot_self(rtot)
-            
-            
-            jx = h[j,0]  
-            jy = h[j,1] 
-            rtot = np.sqrt( (jx-nx - Lx*np.round((jx-nx)/Lx))**2 + (jy-ny - Ly*np.round((jy-ny)/Ly))**2   )
-            PEf_cross = PEf_cross + np.exp(-wlo*abs(n-j)/T/N)*polPot_cross(rtot)
         
     
-    sumE=KEf+PEf -KEi - PEi + (garb/T/N/N)*2*(PEf_self + PEf_cross - PEi_self - PEi_cross)
+    sumE=KEf+PEf -KEi - PEi + (garb/T/N/N)*2*(PEf_self + 0.5*PEf_cross - PEi_self - 0.5*PEi_cross)
     
 
     return (sumE)
@@ -422,7 +424,7 @@ def MetropolisW(x,x_New,N,T,mass,h):
     sumPE_cross = 0        
     for i in range(N):
         for j in range(N):
-            if (i!=j):
+            if (i>-1):
                 ix = x[i,0] 
                 iy = x[i,1] 
                 jx = h[j,0]
@@ -441,7 +443,7 @@ def MetropolisW(x,x_New,N,T,mass,h):
         
         
         
-    return (sumPE + (garb/T/N/N)*( 2*sumPE_cross )  )
+    return (sumPE + (garb/T/N/N)*( sumPE_cross )  )
 
 
 # Parameters #
